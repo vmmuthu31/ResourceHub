@@ -1,22 +1,49 @@
-
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { createResource, Resource } from "@/services/api";
 
-export const AddResourceDialog = ({ onAddResource }: { onAddResource: (resource: any) => void }) => {
+export const AddResourceDialog = ({
+  onAddResource,
+}: {
+  onAddResource: (resource: Resource) => void;
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setUrl("");
+    setCategory("");
+    setTags("");
+    setIsLoading(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || !url || !category) {
       toast({
@@ -26,21 +53,42 @@ export const AddResourceDialog = ({ onAddResource }: { onAddResource: (resource:
       return;
     }
 
-    onAddResource({
+    setIsLoading(true);
+
+    const newResource = {
       title,
       description,
       url,
-      category,
-      tags: tags.split(",").map((tag) => tag.trim()),
-    });
+      category: category as "frontend" | "backend" | "blockchain",
+      tags: tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+    };
 
-    toast({
-      title: "Resource added successfully!",
-    });
+    try {
+      const createdResource = await createResource(newResource);
+      if (createdResource) {
+        onAddResource(createdResource);
+        toast({
+          title: "Resource added successfully!",
+        });
+        setOpen(false);
+        resetForm();
+      }
+    } catch (error) {
+      console.error("Error adding resource:", error);
+      toast({
+        title: "Failed to add resource",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" /> Add Resource
@@ -58,6 +106,7 @@ export const AddResourceDialog = ({ onAddResource }: { onAddResource: (resource:
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Fly on UI Components"
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
@@ -67,6 +116,7 @@ export const AddResourceDialog = ({ onAddResource }: { onAddResource: (resource:
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brief description of the resource"
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
@@ -77,15 +127,20 @@ export const AddResourceDialog = ({ onAddResource }: { onAddResource: (resource:
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://"
               type="url"
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Select onValueChange={setCategory}>
+            <Select
+              onValueChange={setCategory}
+              disabled={isLoading}
+              value={category}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border border-gray-200 text-gray-900 shadow-lg">
                 <SelectItem value="frontend">Frontend</SelectItem>
                 <SelectItem value="backend">Backend</SelectItem>
                 <SelectItem value="blockchain">Blockchain</SelectItem>
@@ -99,9 +154,18 @@ export const AddResourceDialog = ({ onAddResource }: { onAddResource: (resource:
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder="react, components, ui"
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-full">Add Resource</Button>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...
+              </>
+            ) : (
+              "Add Resource"
+            )}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

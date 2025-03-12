@@ -1,30 +1,43 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { ResourceCard } from "@/components/ResourceCard";
 import { AddResourceDialog } from "@/components/AddResourceDialog";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
+import { fetchResources, Resource } from "@/services/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
-  const [resources, setResources] = useState([
-    {
-      title: "Fly on UI Components",
-      description: "A beautiful collection of UI components for modern web applications",
-      url: "https://flyonui.com/components/",
-      category: "frontend" as const,
-      tags: ["components", "ui", "react"],
-    },
-  ]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const filteredResources = resources.filter((resource) =>
-    resource.title.toLowerCase().includes(search.toLowerCase()) ||
-    resource.description.toLowerCase().includes(search.toLowerCase()) ||
-    resource.tags.some((tag) => tag.toLowerCase().includes(search.toLowerCase()))
+  useEffect(() => {
+    const getResources = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchResources();
+        setResources(data);
+      } catch (error) {
+        console.error("Failed to fetch resources:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getResources();
+  }, []);
+
+  const filteredResources = resources.filter(
+    (resource) =>
+      resource.title.toLowerCase().includes(search.toLowerCase()) ||
+      resource.description.toLowerCase().includes(search.toLowerCase()) ||
+      resource.tags.some((tag) =>
+        tag.toLowerCase().includes(search.toLowerCase())
+      )
   );
 
-  const handleAddResource = (newResource: any) => {
-    setResources([...resources, newResource]);
+  const handleAddResource = (newResource: Resource) => {
+    setResources([newResource, ...resources]);
   };
 
   return (
@@ -35,7 +48,8 @@ const Index = () => {
             Developer Resources Hub
           </h1>
           <p className="mb-8 text-lg text-gray-600">
-            Discover and share the best resources for frontend, backend, and blockchain development.
+            Discover and share the best resources for frontend, backend, and
+            blockchain development.
           </p>
           <div className="mb-12 flex items-center gap-4">
             <div className="relative flex-1">
@@ -51,11 +65,38 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredResources.map((resource, index) => (
-            <ResourceCard key={index} {...resource} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, index) => (
+              <div
+                key={index}
+                className="rounded-lg border bg-card p-6 shadow-sm"
+              >
+                <div className="space-y-4">
+                  <Skeleton className="h-4 w-1/4" />
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-20 w-full" />
+                  <div className="flex gap-2">
+                    <Skeleton className="h-6 w-16 rounded-full" />
+                    <Skeleton className="h-6 w-16 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredResources.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredResources.map((resource) => (
+              <ResourceCard key={resource._id} {...resource} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-12 text-center">
+            <p className="text-lg text-gray-500">
+              No resources found matching your search.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
