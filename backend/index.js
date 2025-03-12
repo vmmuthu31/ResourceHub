@@ -20,67 +20,8 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Routes
-app.get("/api/resources", async (req, res) => {
-  try {
-    const resources = await Resource.find().sort({ createdAt: -1 });
-    res.json(resources);
-  } catch (err) {
-    console.error("Error fetching resources:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-app.post("/api/resources", async (req, res) => {
-  try {
-    const newResource = new Resource(req.body);
-    const savedResource = await newResource.save();
-    res.status(201).json(savedResource);
-  } catch (err) {
-    console.error("Error creating resource:", err);
-    res.status(400).json({ message: err.message });
-  }
-});
-
-app.post("/api/resources/:id/like", async (req, res) => {
-  const { id } = req.params;
-  const resource = await Resource.findById(id);
-  resource.likes++;
-  await resource.save();
-  res.json(resource);
-});
-
-app.post("/api/resources/:id/unlike", async (req, res) => {
-  const { id } = req.params;
-  const resource = await Resource.findById(id);
-  resource.likes--;
-  await resource.save();
-  res.json(resource);
-});
-
-app.delete("/api/resources/:id", async (req, res) => {
-  const { id } = req.params;
-  await Resource.findByIdAndDelete(id);
-  res.json({ message: "Resource deleted successfully" });
-});
-
-app.put("/api/resources/:id", async (req, res) => {
-  const { id } = req.params;
-  const { title, description, url, category, tags } = req.body;
-  const resource = await Resource.findByIdAndUpdate(id, {
-    title,
-    description,
-    url,
-    category,
-    tags,
-  });
-  res.json(resource);
-});
-
-app.get("/api/resources/:id/likes", async (req, res) => {
-  const { id } = req.params;
-  const resource = await Resource.findById(id);
-  res.json(resource.likes);
-});
+const resourceRoutes = require("./routes/resource");
+app.use("/", resourceRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "API is running 🚀" });
