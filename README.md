@@ -1,69 +1,80 @@
-# Welcome to your Lovable project
+# ResourceHub 📚
 
-## Project info
+> A community-driven platform for collecting and sharing valuable resources across various domains.
 
-**URL**: https://lovable.dev/projects/aa67c12c-8f4b-4321-a3a9-a9a0ad25993b
+## 🎯 About The Project
 
-## How can I edit this code?
+ResourceHub is an open-source initiative that aims to create a centralized repository of valuable resources for learners, developers, and enthusiasts. Whether it's programming tutorials, educational content, tools, or reference materials, ResourceHub makes it easy to discover and share knowledge.
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+- 📝 Easy resource submission
+- 🔍 Search and filter capabilities
+- 🏷️ Category-based organization
+- 👥 Community-driven content
+- ⭐ Resource rating system
+- 📌 Bookmark favorite resources
+- 🔗 Link verification system
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/aa67c12c-8f4b-4321-a3a9-a9a0ad25993b) and start prompting.
+## 🚀 Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v14 or higher)
+- MongoDB
+- Git
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository
+```bash
+git clone https://github.com/vmmuthu31/ResourceHub.git
+```
 
-Follow these steps:
+2. Install dependencies
+```bash
+cd ResourceHub
+npm install
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Configure environment variables
+```bash
+cp .env.example .env
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Edit the `.env` file with your configuration:
+```env
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+PORT=3000
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. Start the development server
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application should now be running at `http://localhost:3000`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🏗️ Project Structure
 
-**Use GitHub Codespaces**
+```
+ResourceHub/
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```
 
-## What technologies are used for this project?
+## 🤝 Contributing
 
-This project is built with .
+We welcome contributions from the community! Here's how you can help:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## How can I deploy this project?
+Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-Simply open [Lovable](https://lovable.dev/projects/aa67c12c-8f4b-4321-a3a9-a9a0ad25993b) and click on Share -> Publish.
+## 📄 License
 
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
