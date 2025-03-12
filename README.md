@@ -1,4 +1,5 @@
 # ResourceHub 📚
+<img width="1470" alt="Screenshot 2025-03-12 at 10 19 02 PM" src="https://github.com/user-attachments/assets/8913cb5d-8816-465c-bfc8-29b6b352d4e9" />
 
 > A community-driven platform for collecting and sharing valuable resources across various domains.
 
