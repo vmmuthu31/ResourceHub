@@ -10,7 +10,7 @@ export interface Resource {
   createdAt?: string;
 }
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = "https://resourcehub-be.vercel.app/api";
 
 export async function fetchResources(): Promise<Resource[]> {
   try {
